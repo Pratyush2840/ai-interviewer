@@ -51,7 +51,6 @@ const runJobCleanup = async () => {
 
   } catch (error) {
     logger.error(`❌ Job Cleanup Service Error: ${error.message}`);
-    throw error;
   } finally {
     isCleaning = false;
   }
