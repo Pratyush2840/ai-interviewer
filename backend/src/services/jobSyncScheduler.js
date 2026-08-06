@@ -7,8 +7,15 @@ const logger = require('../config/logger');
 // Mutex lock to avoid overlapping scheduler execution
 let isSyncing = false;
 
+// Varied keywords + pages so results aren't dominated by whichever
+// employer happens to have the largest bulk-posting campaign that day.
+const SEARCH_KEYWORDS = ['developer', 'software engineer', 'frontend developer', 'backend developer', 'full stack developer'];
+const PAGES_PER_KEYWORD = 2;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
- * Runs the sync pipeline and logs specific metrics.
+ * Runs the sync pipeline across multiple keywords/pages and logs aggregate metrics.
  */
 const runScheduledSync = async () => {
   if (isSyncing) {
@@ -19,24 +26,29 @@ const runScheduledSync = async () => {
   isSyncing = true;
   logger.info('📋 Cron started: Adzuna Job Sync');
 
+  const totals = { fetched: 0, updated: 0, inserted: 0 };
+
   try {
-    // We execute sync for standard tech search parameters
-    const keyword = 'developer';
-    const location = '';
-    const page = 1;
+    for (const keyword of SEARCH_KEYWORDS) {
+      for (let page = 1; page <= PAGES_PER_KEYWORD; page += 1) {
+        try {
+          const result = await syncJobs(keyword, '', page);
+          totals.fetched += (result.upsertedCount || 0) + (result.matchedCount || 0);
+          totals.updated += result.modifiedCount || 0;
+          totals.inserted += result.upsertedCount || 0;
+        } catch (error) {
+          logger.error(`❌ Job Sync Scheduler Error (keyword: "${keyword}", page: ${page}): ${error.message}`);
+        }
 
-    const result = await syncJobs(keyword, location, page);
+        // Small delay between calls to stay well within Adzuna's rate limits.
+        await sleep(300);
+      }
+    }
 
-    // Summing fetched jobs (upserted + matched)
-    const fetchedCount = (result.upsertedCount || 0) + (result.matchedCount || 0);
-
-    logger.info(`📋 Jobs Fetched: ${fetchedCount}`);
-    logger.info(`📋 Jobs Updated: ${result.modifiedCount || 0}`);
-    logger.info(`📋 Jobs Inserted: ${result.upsertedCount || 0}`);
+    logger.info(`📋 Jobs Fetched: ${totals.fetched}`);
+    logger.info(`📋 Jobs Updated: ${totals.updated}`);
+    logger.info(`📋 Jobs Inserted: ${totals.inserted}`);
     logger.info('📋 Sync Completed');
-
-  } catch (error) {
-    logger.error(`❌ Job Sync Scheduler Error: ${error.message}`);
   } finally {
     isSyncing = false;
   }
