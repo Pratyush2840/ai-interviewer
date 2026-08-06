@@ -26,11 +26,11 @@ const presentDbJob = (job) => {
     const minVal = salaryMin ? Math.round(salaryMin).toLocaleString() : null;
     const maxVal = salaryMax ? Math.round(salaryMax).toLocaleString() : null;
     if (minVal && maxVal) {
-      salaryStr = minVal === maxVal ? `£${minVal}` : `£${minVal} – £${maxVal}`;
+      salaryStr = minVal === maxVal ? `₹${minVal}` : `₹${minVal} – ₹${maxVal}`;
     } else if (minVal) {
-      salaryStr = `£${minVal}+`;
+      salaryStr = `₹${minVal}+`;
     } else if (maxVal) {
-      salaryStr = `£${maxVal}`;
+      salaryStr = `₹${maxVal}`;
     }
   }
 

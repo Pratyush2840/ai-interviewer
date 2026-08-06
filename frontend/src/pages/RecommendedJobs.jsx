@@ -182,7 +182,7 @@ export default function RecommendedJobs() {
                 {(job.salaryMin || job.salaryMax) && (
                   <div className="flex items-center gap-1 bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-md font-medium">
                     <Banknote className="w-3 h-3" />
-                    £{Math.round(job.salaryMin || job.salaryMax).toLocaleString()}
+                    ₹{Math.round(job.salaryMin || job.salaryMax).toLocaleString()}
                   </div>
                 )}
               </div>

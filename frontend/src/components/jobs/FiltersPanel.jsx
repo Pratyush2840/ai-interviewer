@@ -69,7 +69,7 @@ export default function FiltersPanel({ filters, onApply }) {
               Min Salary
             </label>
             <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
-              {draftFilters.salaryMin > 0 ? `$${parseInt(draftFilters.salaryMin).toLocaleString()}+` : 'Any'}
+              {draftFilters.salaryMin > 0 ? `₹${parseInt(draftFilters.salaryMin).toLocaleString()}+` : 'Any'}
             </span>
           </div>
           <input
@@ -82,8 +82,8 @@ export default function FiltersPanel({ filters, onApply }) {
             className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
           />
           <div className="flex justify-between text-xs text-slate-400 mt-2 font-medium">
-            <span>$0</span>
-            <span>$200k+</span>
+            <span>₹0</span>
+            <span>₹200k+</span>
           </div>
         </div>
 

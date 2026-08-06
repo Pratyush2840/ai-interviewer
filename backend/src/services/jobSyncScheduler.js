@@ -12,6 +12,11 @@ let isSyncing = false;
 const SEARCH_KEYWORDS = ['developer', 'software engineer', 'frontend developer', 'backend developer', 'full stack developer'];
 const PAGES_PER_KEYWORD = 2;
 
+// Major Indian IT employers searched by name so they're represented
+// even when they don't rank highly for generic role keywords.
+const INDIAN_COMPANY_KEYWORDS = ['TCS', 'Infosys', 'Wipro', 'HCL Technologies', 'Tech Mahindra', 'Cognizant', 'Capgemini'];
+const PAGES_PER_COMPANY = 1;
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
@@ -28,9 +33,14 @@ const runScheduledSync = async () => {
 
   const totals = { fetched: 0, updated: 0, inserted: 0 };
 
+  const jobBatches = [
+    ...SEARCH_KEYWORDS.map((keyword) => ({ keyword, pages: PAGES_PER_KEYWORD })),
+    ...INDIAN_COMPANY_KEYWORDS.map((keyword) => ({ keyword, pages: PAGES_PER_COMPANY })),
+  ];
+
   try {
-    for (const keyword of SEARCH_KEYWORDS) {
-      for (let page = 1; page <= PAGES_PER_KEYWORD; page += 1) {
+    for (const { keyword, pages } of jobBatches) {
+      for (let page = 1; page <= pages; page += 1) {
         try {
           const result = await syncJobs(keyword, '', page);
           totals.fetched += (result.upsertedCount || 0) + (result.matchedCount || 0);

@@ -76,9 +76,9 @@ function JobPreviewDrawer({ job, onClose }) {
             <div>
               <p className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Salary Range</p>
               <p className="text-white text-sm font-semibold">
-                {job.salaryMin ? `$${job.salaryMin.toLocaleString()}` : '—'}
+                {job.salaryMin ? `₹${job.salaryMin.toLocaleString()}` : '—'}
                 {' '}-{' '}
-                {job.salaryMax ? `$${job.salaryMax.toLocaleString()}` : '—'}
+                {job.salaryMax ? `₹${job.salaryMax.toLocaleString()}` : '—'}
               </p>
             </div>
           </div>

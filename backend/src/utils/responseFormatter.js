@@ -80,10 +80,10 @@ function formatAmount(amount, currency) {
  * @param {string}      currency
  * @returns {string|null}
  */
-function formatSalary(min, max, currency = 'GBP') {
+function formatSalary(min, max, currency = 'INR') {
   if (!min && !max) return null;
 
-  const cur = (currency || 'GBP').toUpperCase();
+  const cur = (currency || 'INR').toUpperCase();
 
   if (min && max) {
     return `${formatAmount(min, cur)}–${formatAmount(max, cur)}`;
